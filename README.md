@@ -31,10 +31,6 @@ The following requirements are needed by this module:
 
 - <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 4.0)
 
-- <a name="requirement_random"></a> [random](#requirement\_random) (~> 3.6)
-
-- <a name="requirement_time"></a> [time](#requirement\_time) (~> 0.10.0)
-
 ## Providers
 
 The following providers are used by this module:
@@ -56,14 +52,12 @@ The following resources are used by this module:
 - [azurerm_subnet.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) (resource)
 - [azurerm_subnet_network_security_group_association.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_network_security_group_association) (resource)
 - [azurerm_subnet_route_table_association.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_route_table_association) (resource)
-- [azurerm_virtual_network.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) (resource)
 - [azurerm_virtual_network_dns_servers.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network_dns_servers) (resource)
 
 ## Required Inputs
 
 The following input variables are required:
 
-### <a name="input_config"></a> [config](#input\_config)
 
 Description: Contains virtual network configuration
 
@@ -86,7 +80,7 @@ object({
     subnets = optional(map(object({
       name                                          = optional(string)
       cidr                                          = list(string)
-      endpoints                                     = optional(list(string), [])
+      service_endpoints                             = optional(list(string), [])
       private_link_service_network_policies_enabled = optional(bool, false)
       private_endpoint_network_policies             = optional(string, "Disabled")
       default_outbound_access_enabled               = optional(bool)
