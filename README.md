@@ -22,69 +22,189 @@ Security standardization is applied at the pattern level, while the modules incl
 
 End-to-end testing is not conducted on these modules, as they are individual components and do not undergo the extensive testing reserved for complete patterns or solutions.
 
-## Features
-
-- dedicated network security group for each subnet, capable of managing multiple rules
-- support for multiple service endpoints and delegations, including actions
-- utilization of terratest for robust validation
-- route table support with multiple user defined routes
-- association of multiple subnets with a single route table
-- optional virtual hub connections for enhanced network integration
-
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.0 |
-| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.0 |
-| <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.6 |
-| <a name="requirement_time"></a> [time](#requirement\_time) | ~> 0.10.0 |
+The following requirements are needed by this module:
+
+- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (~> 1.0)
+
+- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 4.0)
 
 ## Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 4.0 |
-| <a name="provider_time"></a> [time](#provider\_time) | ~> 0.10.0 |
+The following providers are used by this module:
+
+- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (~> 4.0)
+
+## Modules
+
+No modules.
 
 ## Resources
 
-| Name | Type |
-|------|------|
-| [azurerm_network_security_group.nsg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group) | resource |
-| [azurerm_route.routes](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/route) | resource |
-| [azurerm_route.shared_routes](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/route) | resource |
-| [azurerm_route_table.rt](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/route_table) | resource |
-| [azurerm_route_table.shd_rt](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/route_table) | resource |
-| [azurerm_subnet.subnets](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) | resource |
-| [azurerm_subnet_network_security_group_association.nsg_as](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_network_security_group_association) | resource |
-| [azurerm_subnet_route_table_association.rt_as](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_route_table_association) | resource |
-| [azurerm_virtual_network.vnet](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) | resource |
-| [azurerm_virtual_network_dns_servers.dns](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network_dns_servers) | resource |
-| [time_sleep.wait_for_subnet](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
-| [azurerm_subscription.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subscription) | data source |
-| [azurerm_virtual_network.existing](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/virtual_network) | data source |
+The following resources are used by this module:
 
-## Inputs
+- [azurerm_network_security_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group) (resource)
+- [azurerm_network_security_rule.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule) (resource)
+- [azurerm_route.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/route) (resource)
+- [azurerm_route_table.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/route_table) (resource)
+- [azurerm_subnet.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) (resource)
+- [azurerm_subnet_network_security_group_association.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_network_security_group_association) (resource)
+- [azurerm_subnet_route_table_association.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_route_table_association) (resource)
+- [azurerm_virtual_network.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) (resource)
+- [azurerm_virtual_network_dns_servers.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network_dns_servers) (resource)
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_location"></a> [location](#input\_location) | default azure region to be used. | `string` | `null` | no |
-| <a name="input_naming"></a> [naming](#input\_naming) | Used for naming purposes | `map(string)` | `null` | no |
-| <a name="input_resource_group"></a> [resource\_group](#input\_resource\_group) | default resource group to be used. | `string` | `null` | no |
-| <a name="input_tags"></a> [tags](#input\_tags) | tags to be added to the resources | `map(string)` | `{}` | no |
-| <a name="input_use_existing_vnet"></a> [use\_existing\_vnet](#input\_use\_existing\_vnet) | use existing vnets globally | `bool` | `false` | no |
-| <a name="input_vnet"></a> [vnet](#input\_vnet) | Contains all virtual network settings | `any` | n/a | yes |
+## Required Inputs
+
+The following input variables are required:
+
+### <a name="input_config"></a> [config](#input\_config)
+
+Description: Contains virtual network configuration
+
+Type:
+
+```hcl
+object({
+    name                    = string
+    resource_group_name     = optional(string)
+    location                = optional(string)
+    address_space           = list(string)
+    tags                    = optional(map(string))
+    edge_zone               = optional(string)
+    bgp_community           = optional(string)
+    flow_timeout_in_minutes = optional(number)
+    dns_servers             = optional(list(string), [])
+    encryption = optional(object({
+      enforcement = optional(string, "AllowUnencrypted")
+    }))
+    subnets = optional(map(object({
+      name                                          = optional(string)
+      cidr                                          = list(string)
+      service_endpoints                             = optional(list(string), [])
+      private_link_service_network_policies_enabled = optional(bool, false)
+      private_endpoint_network_policies             = optional(string, "Disabled")
+      default_outbound_access_enabled               = optional(bool)
+      service_endpoint_policy_ids                   = optional(list(string))
+      delegations = optional(map(object({
+        name    = string
+        actions = optional(list(string), [])
+      })))
+      network_security_group = optional(object({
+        name = optional(string)
+        tags = optional(map(string))
+        rules = optional(map(object({
+          name                         = string
+          priority                     = number
+          direction                    = string
+          access                       = string
+          protocol                     = string
+          description                  = optional(string)
+          source_port_range            = optional(string)
+          source_port_ranges           = optional(list(string))
+          destination_port_range       = optional(string)
+          destination_port_ranges      = optional(list(string))
+          source_address_prefix        = optional(string)
+          source_address_prefixes      = optional(list(string))
+          destination_address_prefix   = optional(string)
+          destination_address_prefixes = optional(list(string))
+        })))
+      }))
+      route_table = optional(object({
+        name                          = optional(string)
+        bgp_route_propagation_enabled = optional(bool, true)
+        tags                          = optional(map(string))
+        routes = optional(map(object({
+          address_prefix         = string
+          next_hop_type          = string
+          next_hop_in_ip_address = optional(string)
+        })))
+      }))
+      shared = optional(object({
+        route_table            = optional(string)
+        network_security_group = optional(string)
+      }), {})
+    })), {})
+    network_security_groups = optional(map(object({
+      name = optional(string)
+      tags = optional(map(string))
+      rules = optional(map(object({
+        name                         = string
+        priority                     = number
+        direction                    = string
+        access                       = string
+        protocol                     = string
+        source_port_range            = optional(string)
+        source_port_ranges           = optional(list(string))
+        destination_port_range       = optional(string)
+        destination_port_ranges      = optional(list(string))
+        source_address_prefix        = optional(string)
+        source_address_prefixes      = optional(list(string))
+        destination_address_prefix   = optional(string)
+        destination_address_prefixes = optional(list(string))
+      })))
+    })), {})
+    route_tables = optional(map(object({
+      name                          = optional(string)
+      bgp_route_propagation_enabled = optional(bool, true)
+      tags                          = optional(map(string))
+      routes = optional(map(object({
+        address_prefix         = string
+        next_hop_type          = string
+        next_hop_in_ip_address = optional(string)
+      })))
+    })), {})
+  })
+```
+
+## Optional Inputs
+
+The following input variables are optional (have default values):
+
+### <a name="input_location"></a> [location](#input\_location)
+
+Description: default azure region to be used.
+
+Type: `string`
+
+Default: `null`
+
+### <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name)
+
+Description: default resource group to be used.
+
+Type: `string`
+
+Default: `null`
+
+### <a name="input_tags"></a> [tags](#input\_tags)
+
+Description: tags to be added to the resources
+
+Type: `map(string)`
+
+Default: `{}`
+
+### <a name="input_naming"></a> [naming](#input\_naming)
+
+Description: contains naming convention
+
+Type: `map(string)`
+
+Default: `{}`
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_network_security_group"></a> [network\_security\_group](#output\_network\_security\_group) | n/a |
-| <a name="output_subnets"></a> [subnets](#output\_subnets) | n/a |
-| <a name="output_subscription_id"></a> [subscription\_id](#output\_subscription\_id) | n/a |
-| <a name="output_vnet"></a> [vnet](#output\_vnet) | n/a |
+The following outputs are exported:
+
+### <a name="output_config"></a> [config](#output\_config)
+
+Description: contains virtual network configuration
+
+### <a name="output_subnets"></a> [subnets](#output\_subnets)
+
+Description: contains subnets configuration
 <!-- END_TF_DOCS -->
 
 ## Testing
@@ -99,28 +219,10 @@ Replace default with the specific example you want to test. These tests ensure t
 
 ## Notes
 
-Using a dedicated module, we've developed a naming convention for resources that's based on specific regular expressions for each type, ensuring correct abbreviations and offering flexibility with multiple prefixes and suffixes.
+This is an experimental module for private use.
 
-Full examples detailing all usages, along with integrations with dependency modules, are located in the examples directory.
+A naming convention is developed using regular expressions to ensure correct abbreviations, with flexibility for multiple prefixes and suffixes.
+
+Full usage examples and integrations with dependency modules are in the examples directory.
 
 To update the module's documentation run `make doc`
-
-## Authors
-
-Module is maintained by [these awesome contributors](https://github.com/cloudnationhq/terraform-azure-vnet/graphs/contributors).
-
-## Contributing
-
-We welcome contributions from the community! Whether it's reporting a bug, suggesting a new feature, or submitting a pull request, your input is highly valued.
-
-For more information, please see our contribution [guidelines](https://github.com/CloudNationHQ/terraform-azure-vnet/blob/main/CONTRIBUTING.md).
-
-## License
-
-MIT Licensed. See [LICENSE](https://github.com/cloudnationhq/terraform-azure-vnet/blob/main/LICENSE) for full details.
-
-## Reference
-
-- [Documentation](https://learn.microsoft.com/en-us/azure/virtual-network/)
-- [Rest Api](https://learn.microsoft.com/en-us/rest/api/virtual-network/)
-- [Rest Api Specs](https://github.com/Azure/azure-rest-api-specs/blob/main/specification/network/resource-manager/Microsoft.Network/stable/2023-04-01/virtualNetwork.json)

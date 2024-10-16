@@ -11,15 +11,7 @@ test:
 	cd tests && go test -v -timeout 60m -run TestApplyNoError/$(EXAMPLE) ./deploy_test.go
 
 docs:
-	@echo "Generating documentation for root and modules..."
-	@BASE_DIR=$$(pwd); \
-	terraform-docs markdown . --output-file $$BASE_DIR/README.md --output-mode inject --hide modules; \
-	for dir in $$BASE_DIR/modules/*; do \
-		if [ -d "$$dir" ]; then \
-			echo "Processing $$dir..."; \
-			terraform-docs markdown $$dir --output-file $$dir/README.md --output-mode inject --hide modules || echo "Skipped: $$dir"; \
-		fi \
-	done
+	terraform-docs markdown document . --output-file README.md --output-mode inject --sort=false
 
 fmt:
 	terraform fmt -recursive

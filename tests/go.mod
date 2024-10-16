@@ -1,6 +1,6 @@
-module github.com/cloudnationhq/terraform-azure-vnet
+module github.com/aztfmods/terraform-azure-vnet
 
-go 1.23.1
+go 1.23.2
 
 require github.com/gruntwork-io/terratest v0.47.2
 
