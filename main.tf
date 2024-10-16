@@ -31,7 +31,7 @@ resource "azurerm_virtual_network" "vnet" {
   }
 }
 
-resource "azurerm_virtual_network_dns_servers" "dns" {
+resource "azurerm_virtual_network_dns_servers" "this" {
   for_each = length(lookup(var.config, "dns_servers", [])) > 0 ? { "default" = var.config.dns_servers } : {}
 
   virtual_network_id = azurerm_virtual_network.vnet.id
@@ -148,14 +148,14 @@ resource "azurerm_network_security_rule" "rules" {
 resource "azurerm_subnet_network_security_group_association" "nsg_as" {
   for_each = {
     for subnet_key, subnet in var.config.subnets : subnet_key => subnet
-    if subnet.network_security_group_shared != null || subnet.network_security_group != null
+    if subnet.shared.network_security_group != null || subnet.network_security_group != null
   }
 
   subnet_id                 = azurerm_subnet.subnets[each.key].id
-  network_security_group_id = each.value.network_security_group_shared != null ? azurerm_network_security_group.nsg[each.value.network_security_group_shared].id : azurerm_network_security_group.nsg[each.key].id
+  network_security_group_id = each.value.shared.network_security_group != null ? azurerm_network_security_group.nsg[each.value.shared.network_security_group].id : azurerm_network_security_group.nsg[each.key].id
 }
 
-# Route tables (individual and shared)
+# route tables individual and shared
 resource "azurerm_route_table" "rt" {
   for_each = merge(
     var.config.route_tables,
@@ -176,7 +176,7 @@ resource "azurerm_route_table" "rt" {
   }
 }
 
-# Routes (for both shared and individual route tables)
+# routes individual and shared
 resource "azurerm_route" "routes" {
   for_each = merge({
     for pair in flatten([
@@ -220,13 +220,13 @@ resource "azurerm_route" "routes" {
   next_hop_in_ip_address = lookup(each.value.route, "next_hop_in_ip_address", null)
 }
 
-# Route table associations
+# route table associations
 resource "azurerm_subnet_route_table_association" "rt_as" {
   for_each = {
     for subnet_key, subnet in var.config.subnets : subnet_key => subnet
-    if subnet.route_table_shared != null || subnet.route_table != null
+    if subnet.shared.route_table != null || subnet.route_table != null
   }
 
   subnet_id      = azurerm_subnet.subnets[each.key].id
-  route_table_id = each.value.route_table_shared != null ? azurerm_route_table.rt[each.value.route_table_shared].id : azurerm_route_table.rt[each.key].id
+  route_table_id = each.value.shared.route_table != null ? azurerm_route_table.rt[each.value.shared.route_table].id : azurerm_route_table.rt[each.key].id
 }

@@ -32,12 +32,16 @@ module "network" {
 
     subnets = {
       sn1 = {
-        cidr               = ["10.18.1.0/24"]
-        route_table_shared = "shd"
+        cidr = ["10.18.1.0/24"]
+        shared = {
+          route_table = "shd"
+        }
       },
       sn2 = {
-        cidr               = ["10.18.2.0/24"]
-        route_table_shared = "shd"
+        cidr = ["10.18.2.0/24"]
+        shared = {
+          route_table = "shd"
+        }
       },
       sn3 = {
         cidr = ["10.18.3.0/24"]
