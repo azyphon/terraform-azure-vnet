@@ -1,9 +1,9 @@
 output "config" {
   description = "contains virtual network configuration"
-  value = azurerm_virtual_network.vnet
+  value       = azurerm_virtual_network.this
 }
 
 output "subnets" {
   description = "contains subnets configuration"
-  value = azurerm_subnet.subnets
+  value       = azurerm_subnet.this
 }
