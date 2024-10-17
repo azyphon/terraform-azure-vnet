@@ -83,10 +83,22 @@ resource "azurerm_network_security_group" "this" {
     }
   )
 
-  name                = coalesce(lookup(each.value, "name", null), "${var.config.name}-${each.key}-nsg")
-  resource_group_name = var.config.resource_group_name
-  location            = var.config.location
-  tags                = try(var.config.tags, var.tags, {})
+  name = coalesce(
+    lookup(each.value, "name", null),
+    try("${var.naming.network_security_group}-${each.key}", null)
+  )
+
+  resource_group_name = coalesce(
+    var.config.resource_group_name, var.resource_group_name
+  )
+
+  location = coalesce(
+    var.config.location, var.location
+  )
+
+  tags = try(
+    var.config.tags, var.tags, {}
+  )
 }
 
 # security rules individual and shared
@@ -99,9 +111,11 @@ resource "azurerm_network_security_rule" "this" {
           for rule_key, rule in nsg.rules : {
             key = "${nsg_key}_${rule_key}"
             value = {
-              nsg_name  = azurerm_network_security_group.this[nsg_key].name
-              rule_name = rule_key
-              rule      = rule
+              nsg_name = azurerm_network_security_group.this[nsg_key].name
+              rule     = rule
+              rule_name = coalesce(
+                rule.name, join("-", [var.naming.network_security_group_rule, rule_key])
+              )
             }
           }
         ] : []
@@ -115,9 +129,11 @@ resource "azurerm_network_security_rule" "this" {
           for rule_key, rule in subnet.network_security_group.rules : {
             key = "${subnet_key}_${rule_key}"
             value = {
-              nsg_name  = azurerm_network_security_group.this[subnet_key].name
-              rule_name = rule_key
-              rule      = rule
+              nsg_name = azurerm_network_security_group.this[subnet_key].name
+              rule     = rule
+              rule_name = coalesce(
+                rule.name, join("-", [var.naming.network_security_group_rule, rule_key])
+              )
             }
           }
         ] : []
@@ -131,15 +147,15 @@ resource "azurerm_network_security_rule" "this" {
   direction                    = each.value.rule.direction
   access                       = each.value.rule.access
   protocol                     = each.value.rule.protocol
-  source_port_range            = lookup(each.value.rule, "source_port_range", null)
-  source_port_ranges           = lookup(each.value.rule, "source_port_ranges", null)
-  destination_port_range       = lookup(each.value.rule, "destination_port_range", null)
-  destination_port_ranges      = lookup(each.value.rule, "destination_port_ranges", null)
-  source_address_prefix        = lookup(each.value.rule, "source_address_prefix", null)
-  source_address_prefixes      = lookup(each.value.rule, "source_address_prefixes", null)
-  destination_address_prefix   = lookup(each.value.rule, "destination_address_prefix", null)
-  destination_address_prefixes = lookup(each.value.rule, "destination_address_prefixes", null)
-  description                  = lookup(each.value.rule, "description", null)
+  source_port_range            = each.value.rule.source_port_range
+  source_port_ranges           = each.value.rule.source_port_ranges
+  destination_port_range       = each.value.rule.destination_port_range
+  destination_port_ranges      = each.value.rule.destination_port_ranges
+  source_address_prefix        = each.value.rule.source_address_prefix
+  source_address_prefixes      = each.value.rule.source_address_prefixes
+  destination_address_prefix   = each.value.rule.destination_address_prefix
+  destination_address_prefixes = each.value.rule.destination_address_prefixes
+  description                  = each.value.rule.description
   resource_group_name          = var.config.resource_group_name
   network_security_group_name  = each.value.nsg_name
 }
@@ -158,18 +174,36 @@ resource "azurerm_subnet_network_security_group_association" "this" {
 # route tables individual and shared
 resource "azurerm_route_table" "this" {
   for_each = merge(
-    var.config.route_tables,
-    {
+    var.config.route_tables, {
       for subnet_key, subnet in var.config.subnets : subnet_key => subnet.route_table
       if subnet.route_table != null
     }
   )
 
-  name                          = coalesce(lookup(each.value, "name", null), "${var.config.name}-${each.key}-rt")
-  resource_group_name           = var.config.resource_group_name
-  location                      = var.config.location
-  bgp_route_propagation_enabled = lookup(each.value, "bgp_route_propagation_enabled", true)
-  tags                          = try(var.config.tags, var.tags, {})
+  name = coalesce(
+    lookup(each.value, "name", null),
+    try("${var.naming.route_table}-${each.key}", null)
+  )
+
+
+  #name = coalesce(
+  #each.value.name, join("-", [var.naming.route_table, each.key])
+  #)
+
+  resource_group_name = coalesce(
+    var.config.resource_group_name, var.resource_group_name
+  )
+
+  location = coalesce(
+    var.config.location, var.location
+  )
+
+  bgp_route_propagation_enabled = each.value.bgp_route_propagation_enabled
+
+  tags = try(
+    var.config.tags, var.tags, {}
+  )
+
 
   lifecycle {
     ignore_changes = [route]
@@ -187,8 +221,10 @@ resource "azurerm_route" "this" {
             key = "${rt_key}_${route_key}"
             value = {
               route_table_name = azurerm_route_table.this[rt_key].name
-              route_name       = route_key
               route            = route
+              route_name = coalesce(
+                route.name, join("-", [var.naming.route, route_key])
+              )
             }
           }
         ] : []
@@ -203,8 +239,10 @@ resource "azurerm_route" "this" {
             key = "${subnet_key}_${route_key}"
             value = {
               route_table_name = azurerm_route_table.this[subnet_key].name
-              route_name       = route_key
               route            = route
+              route_name = coalesce(
+                route.name, join("-", [var.naming.route, route_key])
+              )
             }
           }
         ] : []
@@ -217,7 +255,7 @@ resource "azurerm_route" "this" {
   route_table_name       = each.value.route_table_name
   address_prefix         = each.value.route.address_prefix
   next_hop_type          = each.value.route.next_hop_type
-  next_hop_in_ip_address = lookup(each.value.route, "next_hop_in_ip_address", null)
+  next_hop_in_ip_address = each.value.route.next_hop_in_ip_address
 }
 
 # route table associations

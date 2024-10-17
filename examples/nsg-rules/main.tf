@@ -47,7 +47,6 @@ module "network" {
         network_security_group = {
           rules = {
             myhttps = {
-              name                       = "myhttps"
               priority                   = 100
               direction                  = "Inbound"
               access                     = "Allow"
@@ -65,7 +64,6 @@ module "network" {
       shd = {
         rules = {
           allow_http = {
-            name                       = "allow_http"
             priority                   = 100
             direction                  = "Inbound"
             access                     = "Allow"

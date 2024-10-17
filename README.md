@@ -95,20 +95,20 @@ object({
         name = optional(string)
         tags = optional(map(string))
         rules = optional(map(object({
-          name                         = string
+          name                         = optional(string)
           priority                     = number
           direction                    = string
           access                       = string
           protocol                     = string
-          description                  = optional(string)
-          source_port_range            = optional(string)
-          source_port_ranges           = optional(list(string))
-          destination_port_range       = optional(string)
-          destination_port_ranges      = optional(list(string))
-          source_address_prefix        = optional(string)
-          source_address_prefixes      = optional(list(string))
-          destination_address_prefix   = optional(string)
-          destination_address_prefixes = optional(list(string))
+          description                  = optional(string, null)
+          source_port_range            = optional(string, null)
+          source_port_ranges           = optional(list(string), null)
+          destination_port_range       = optional(string, null)
+          destination_port_ranges      = optional(list(string), null)
+          source_address_prefix        = optional(string, null)
+          source_address_prefixes      = optional(list(string), null)
+          destination_address_prefix   = optional(string, null)
+          destination_address_prefixes = optional(list(string), null)
         })))
       }))
       route_table = optional(object({
@@ -116,9 +116,10 @@ object({
         bgp_route_propagation_enabled = optional(bool, true)
         tags                          = optional(map(string))
         routes = optional(map(object({
+          name                   = optional(string)
           address_prefix         = string
           next_hop_type          = string
-          next_hop_in_ip_address = optional(string)
+          next_hop_in_ip_address = optional(string, null)
         })))
       }))
       shared = optional(object({
@@ -130,19 +131,20 @@ object({
       name = optional(string)
       tags = optional(map(string))
       rules = optional(map(object({
-        name                         = string
+        name                         = optional(string)
         priority                     = number
         direction                    = string
         access                       = string
         protocol                     = string
-        source_port_range            = optional(string)
-        source_port_ranges           = optional(list(string))
-        destination_port_range       = optional(string)
-        destination_port_ranges      = optional(list(string))
-        source_address_prefix        = optional(string)
-        source_address_prefixes      = optional(list(string))
-        destination_address_prefix   = optional(string)
-        destination_address_prefixes = optional(list(string))
+        description                  = optional(string, null)
+        source_port_range            = optional(string, null)
+        source_port_ranges           = optional(list(string), null)
+        destination_port_range       = optional(string, null)
+        destination_port_ranges      = optional(list(string), null)
+        source_address_prefix        = optional(string, null)
+        source_address_prefixes      = optional(list(string), null)
+        destination_address_prefix   = optional(string, null)
+        destination_address_prefixes = optional(list(string), null)
       })))
     })), {})
     route_tables = optional(map(object({
@@ -150,9 +152,10 @@ object({
       bgp_route_propagation_enabled = optional(bool, true)
       tags                          = optional(map(string))
       routes = optional(map(object({
+        name                   = optional(string)
         address_prefix         = string
         next_hop_type          = string
-        next_hop_in_ip_address = optional(string)
+        next_hop_in_ip_address = optional(string, null)
       })))
     })), {})
   })
