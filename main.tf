@@ -185,11 +185,6 @@ resource "azurerm_route_table" "this" {
     try("${var.naming.route_table}-${each.key}", null)
   )
 
-
-  #name = coalesce(
-  #each.value.name, join("-", [var.naming.route_table, each.key])
-  #)
-
   resource_group_name = coalesce(
     var.config.resource_group_name, var.resource_group_name
   )
