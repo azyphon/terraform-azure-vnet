@@ -84,7 +84,8 @@ resource "azurerm_network_security_group" "this" {
   )
 
   name = coalesce(
-    lookup(each.value, "name", null), "${var.config.name}-${each.key}-nsg"
+    lookup(each.value, "name", null),
+    try("${var.naming.network_security_group}-${each.key}", null)
   )
 
   resource_group_name = coalesce(
@@ -110,9 +111,11 @@ resource "azurerm_network_security_rule" "this" {
           for rule_key, rule in nsg.rules : {
             key = "${nsg_key}_${rule_key}"
             value = {
-              nsg_name  = azurerm_network_security_group.this[nsg_key].name
-              rule_name = rule_key // FIX: name needs to be fixed
-              rule      = rule
+              nsg_name = azurerm_network_security_group.this[nsg_key].name
+              rule     = rule
+              rule_name = coalesce(
+                rule.name, join("-", [var.naming.network_security_group_rule, rule_key])
+              )
             }
           }
         ] : []
@@ -126,9 +129,11 @@ resource "azurerm_network_security_rule" "this" {
           for rule_key, rule in subnet.network_security_group.rules : {
             key = "${subnet_key}_${rule_key}"
             value = {
-              nsg_name  = azurerm_network_security_group.this[subnet_key].name
-              rule_name = rule_key // FIX: name needs to be fixed
-              rule      = rule
+              nsg_name = azurerm_network_security_group.this[subnet_key].name
+              rule     = rule
+              rule_name = coalesce(
+                rule.name, join("-", [var.naming.network_security_group_rule, rule_key])
+              )
             }
           }
         ] : []
@@ -176,8 +181,14 @@ resource "azurerm_route_table" "this" {
   )
 
   name = coalesce(
-    each.value.name, join("-", [var.naming.route_table, each.key])
+    lookup(each.value, "name", null),
+    try("${var.naming.route_table}-${each.key}", null)
   )
+
+
+  #name = coalesce(
+  #each.value.name, join("-", [var.naming.route_table, each.key])
+  #)
 
   resource_group_name = coalesce(
     var.config.resource_group_name, var.resource_group_name
@@ -210,8 +221,10 @@ resource "azurerm_route" "this" {
             key = "${rt_key}_${route_key}"
             value = {
               route_table_name = azurerm_route_table.this[rt_key].name
-              route_name       = route_key // FIX: name needs to be fixed
               route            = route
+              route_name = coalesce(
+                route.name, join("-", [var.naming.route, route_key])
+              )
             }
           }
         ] : []
@@ -226,8 +239,10 @@ resource "azurerm_route" "this" {
             key = "${subnet_key}_${route_key}"
             value = {
               route_table_name = azurerm_route_table.this[subnet_key].name
-              route_name       = route_key
-              route            = route # FIX: name needs to be fixed
+              route            = route
+              route_name = coalesce(
+                route.name, join("-", [var.naming.route, route_key])
+              )
             }
           }
         ] : []

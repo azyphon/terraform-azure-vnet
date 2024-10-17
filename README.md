@@ -95,7 +95,7 @@ object({
         name = optional(string)
         tags = optional(map(string))
         rules = optional(map(object({
-          name                         = string
+          name                         = optional(string)
           priority                     = number
           direction                    = string
           access                       = string
@@ -116,6 +116,7 @@ object({
         bgp_route_propagation_enabled = optional(bool, true)
         tags                          = optional(map(string))
         routes = optional(map(object({
+          name                   = optional(string)
           address_prefix         = string
           next_hop_type          = string
           next_hop_in_ip_address = optional(string, null)
@@ -130,7 +131,7 @@ object({
       name = optional(string)
       tags = optional(map(string))
       rules = optional(map(object({
-        name                         = string
+        name                         = optional(string)
         priority                     = number
         direction                    = string
         access                       = string
@@ -151,6 +152,7 @@ object({
       bgp_route_propagation_enabled = optional(bool, true)
       tags                          = optional(map(string))
       routes = optional(map(object({
+        name                   = optional(string)
         address_prefix         = string
         next_hop_type          = string
         next_hop_in_ip_address = optional(string, null)
