@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/aztfmods/terraform-azure-vnet/compare/v1.0.0...v1.0.1) (2024-10-17)
+
+
+### Bug Fixes
+
+* naming issues ([#4](https://github.com/aztfmods/terraform-azure-vnet/issues/4)) ([41015a5](https://github.com/aztfmods/terraform-azure-vnet/commit/41015a5b20a60f03464c626388bd267e91b43952))
+
 ## 1.0.0 (2024-10-16)
 
 
