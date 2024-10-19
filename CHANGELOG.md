@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/aztfmods/terraform-azure-vnet/compare/v1.0.1...v1.0.2) (2024-10-19)
+
+
+### Bug Fixes
+
+* fix module reference default usage ([#6](https://github.com/aztfmods/terraform-azure-vnet/issues/6)) ([2bdb803](https://github.com/aztfmods/terraform-azure-vnet/commit/2bdb80330997d23ec5d70d44cce98f502d357e4f))
+
 ## [1.0.1](https://github.com/aztfmods/terraform-azure-vnet/compare/v1.0.0...v1.0.1) (2024-10-17)
 
 
