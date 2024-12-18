@@ -1,13 +1,12 @@
 # virtual network
 resource "azurerm_virtual_network" "this" {
-  resource_group_name = coalesce(
-    var.config.resource_group_name, var.resource_group_name
-  )
-
-  location = coalesce(
+  location = try(
     var.config.location, var.location
   )
 
+  resource_group_name = try(
+    var.config.resource_group_name, var.resource_group_name
+  )
 
   name                    = var.config.name
   address_space           = var.config.address_space
