@@ -27,7 +27,7 @@ End-to-end testing is not conducted on these modules, as they are individual com
 
 The following requirements are needed by this module:
 
-- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (~> 1.0)
+- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.9.0)
 
 - <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 4.0)
 
@@ -36,10 +36,6 @@ The following requirements are needed by this module:
 The following providers are used by this module:
 
 - <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (~> 4.0)
-
-## Modules
-
-No modules.
 
 ## Resources
 
@@ -173,6 +169,14 @@ Type: `string`
 
 Default: `null`
 
+### <a name="input_naming"></a> [naming](#input\_naming)
+
+Description: contains naming convention
+
+Type: `map(string)`
+
+Default: `{}`
+
 ### <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name)
 
 Description: default resource group to be used.
@@ -184,14 +188,6 @@ Default: `null`
 ### <a name="input_tags"></a> [tags](#input\_tags)
 
 Description: tags to be added to the resources
-
-Type: `map(string)`
-
-Default: `{}`
-
-### <a name="input_naming"></a> [naming](#input\_naming)
-
-Description: contains naming convention
 
 Type: `map(string)`
 
