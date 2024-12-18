@@ -18,8 +18,7 @@ module "groups" {
 }
 
 module "network" {
-  source  = "app.terraform.io/aztfmods/vnet/azure"
-  version = "~> 1.0"
+  source = "../../"
 
   naming = local.naming
 
@@ -31,7 +30,7 @@ module "network" {
 
     subnets = {
       sn1 = {
-        cidr = ["10.18.1.0/24"]
+        address_prefixes = ["10.18.1.0/24"]
         service_endpoints = [
           "Microsoft.Storage",
           "Microsoft.Sql"
