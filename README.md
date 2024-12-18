@@ -208,13 +208,7 @@ Description: contains subnets configuration
 
 ## Testing
 
-Ensure go and terraform are installed.
-
-Run tests for different usage scenarios by specifying the EXAMPLE environment variable. Usage examples are in the examples directory.
-
-To execute a test, run `make test EXAMPLE=default`
-
-Replace default with the specific example you want to test. These tests ensure the module performs reliably across various configurations.
+For more information, please see our testing [guidelines](./TESTING.md)
 
 ## Notes
 
