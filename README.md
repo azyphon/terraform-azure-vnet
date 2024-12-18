@@ -77,7 +77,7 @@ object({
     }))
     subnets = optional(map(object({
       name                                          = optional(string)
-      cidr                                          = list(string)
+      address_prefixes                              = list(string)
       service_endpoints                             = optional(list(string), [])
       private_link_service_network_policies_enabled = optional(bool, false)
       private_endpoint_network_policies             = optional(string, "Disabled")

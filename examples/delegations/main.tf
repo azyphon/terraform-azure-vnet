@@ -18,8 +18,7 @@ module "groups" {
 }
 
 module "network" {
-  source  = "app.terraform.io/aztfmods/vnet/azure"
-  version = "~> 1.0"
+  source = "../../"
 
   naming = local.naming
 
@@ -31,7 +30,7 @@ module "network" {
 
     subnets = {
       sn1 = {
-        cidr = ["10.18.1.0/24"]
+        address_prefixes = ["10.18.1.0/24"]
         delegations = {
           sql = {
             name = "Microsoft.Sql/managedInstances"
@@ -44,7 +43,7 @@ module "network" {
         }
       }
       sn2 = {
-        cidr = ["10.18.2.0/24"]
+        address_prefixes = ["10.18.2.0/24"]
         delegations = {
           web = {
             name = "Microsoft.Web/serverFarms"

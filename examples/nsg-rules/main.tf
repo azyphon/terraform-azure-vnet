@@ -18,8 +18,7 @@ module "groups" {
 }
 
 module "network" {
-  source  = "app.terraform.io/aztfmods/vnet/azure"
-  version = "~> 1.0"
+  source = "../../"
 
   naming = local.naming
 
@@ -31,19 +30,19 @@ module "network" {
 
     subnets = {
       sn1 = {
-        cidr = ["10.18.1.0/24"]
+        address_prefixes = ["10.18.1.0/24"]
         shared = {
           network_security_group = "shd"
         }
       },
       sn2 = {
-        cidr = ["10.18.2.0/24"]
+        address_prefixes = ["10.18.2.0/24"]
         shared = {
           network_security_group = "shd"
         }
       },
       sn3 = {
-        cidr = ["10.18.3.0/24"]
+        address_prefixes = ["10.18.3.0/24"]
         network_security_group = {
           rules = {
             myhttps = {
