@@ -2,10 +2,6 @@
 
 This terraform module simplifies the process of creating and managing virtual network resources on azure with configurable options for network topology, subnets, security groups, and more to ensure a secure and efficient environment for resource communication in the cloud.
 
-## Goals
-
-For more information, please see our [goals and non-goals](./GOALS.md).
-
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -189,6 +185,10 @@ Description: contains virtual network configuration
 
 Description: contains subnets configuration
 <!-- END_TF_DOCS -->
+
+## Goals
+
+For more information, please see our [goals and non-goals](./GOALS.md).
 
 ## Testing
 
