@@ -98,6 +98,10 @@ resource "azurerm_network_security_group" "this" {
   tags = try(
     var.config.tags, var.tags, {}
   )
+
+  lifecycle {
+    ignore_changes = [security_rule]
+  }
 }
 
 # security rules individual and shared
