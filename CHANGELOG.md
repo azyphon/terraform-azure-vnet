@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/aztfmods/terraform-azure-vnet/compare/v1.1.0...v1.2.0) (2024-12-18)
+
+
+### Features
+
+* **docs:** move goals and non-goals to a separate file ([#16](https://github.com/aztfmods/terraform-azure-vnet/issues/16)) ([e2fcd56](https://github.com/aztfmods/terraform-azure-vnet/commit/e2fcd5620bae69e62fef02f1e63f6b49f2e6a726))
+
 ## [1.1.0](https://github.com/aztfmods/terraform-azure-vnet/compare/v1.0.2...v1.1.0) (2024-12-18)
 
 
