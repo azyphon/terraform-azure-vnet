@@ -168,6 +168,8 @@ resource "azurerm_subnet_network_security_group_association" "this" {
 
   subnet_id                 = azurerm_subnet.this[each.key].id
   network_security_group_id = each.value.shared.network_security_group != null ? azurerm_network_security_group.this[each.value.shared.network_security_group].id : azurerm_network_security_group.this[each.key].id
+
+  depends_on = [azurerm_network_security_rule.this]
 }
 
 # route tables individual and shared
@@ -261,8 +263,4 @@ resource "azurerm_subnet_route_table_association" "this" {
 
   subnet_id      = azurerm_subnet.this[each.key].id
   route_table_id = each.value.shared.route_table != null ? azurerm_route_table.this[each.value.shared.route_table].id : azurerm_route_table.this[each.key].id
-
-  depends_on = [
-    azurerm_network_security_rule.this
-  ]
 }
