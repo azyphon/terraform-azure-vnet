@@ -261,4 +261,8 @@ resource "azurerm_subnet_route_table_association" "this" {
 
   subnet_id      = azurerm_subnet.this[each.key].id
   route_table_id = each.value.shared.route_table != null ? azurerm_route_table.this[each.value.shared.route_table].id : azurerm_route_table.this[each.key].id
+
+  depends_on = [
+    azurerm_network_security_rule.this
+  ]
 }
