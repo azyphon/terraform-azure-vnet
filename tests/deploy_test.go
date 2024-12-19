@@ -11,25 +11,35 @@ import (
 	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
-var (
+const (
+	examplesDir   = "../examples"
+	terraformGlob = "*.terraform*"
+	tfstateGlob   = "*tfstate*"
+	lockFileGlob  = "*.lock.hcl"
+)
+
+type testConfig struct {
 	skipDestroy   bool
 	exception     string
 	example       string
 	exceptionList map[string]bool
-)
-
-func init() {
-	flag.BoolVar(&skipDestroy, "skip-destroy", false, "Skip running terraform destroy after apply")
-	flag.StringVar(&exception, "exception", "", "Comma-separated list of examples to exclude")
-	flag.StringVar(&example, "example", "", "Specific example to test")
 }
 
-func parseExceptionList() {
-	exceptionList = make(map[string]bool)
-	if exception != "" {
-		examples := strings.Split(exception, ",")
+var config = &testConfig{
+	exceptionList: make(map[string]bool),
+}
+
+func init() {
+	flag.BoolVar(&config.skipDestroy, "skip-destroy", false, "Skip running terraform destroy after apply")
+	flag.StringVar(&config.exception, "exception", "", "Comma-separated list of examples to exclude")
+	flag.StringVar(&config.example, "example", "", "Specific example to test")
+}
+
+func (c *testConfig) parseExceptionList() {
+	if c.exception != "" {
+		examples := strings.Split(c.exception, ",")
 		for _, ex := range examples {
-			exceptionList[strings.TrimSpace(ex)] = true
+			c.exceptionList[strings.TrimSpace(ex)] = true
 		}
 	}
 }
@@ -72,7 +82,7 @@ func (mm *ModuleManager) DiscoverModules() ([]*Module, error) {
 	for _, entry := range entries {
 		if entry.IsDir() {
 			moduleName := entry.Name()
-			if exceptionList[moduleName] {
+			if config.exceptionList[moduleName] {
 				fmt.Printf("Skipping module %s as it is in the exception list\n", moduleName)
 				continue
 			}
@@ -113,7 +123,7 @@ func (m *Module) Destroy(t *testing.T) error {
 func (m *Module) cleanupFiles(t *testing.T) error {
 	t.Helper()
 	t.Logf("Cleaning up in: %s", m.Options.TerraformDir)
-	filesToCleanup := []string{"*.terraform*", "*tfstate*", "*.lock.hcl"}
+	filesToCleanup := []string{terraformGlob, tfstateGlob, lockFileGlob}
 
 	for _, pattern := range filesToCleanup {
 		matches, err := filepath.Glob(filepath.Join(m.Options.TerraformDir, pattern))
@@ -141,7 +151,7 @@ func RunTests(t *testing.T, modules []*Module, parallel bool) {
 			}
 
 			// Defer Destroy to ensure cleanup happens, regardless of Apply success or failure
-			if !skipDestroy {
+			if !config.skipDestroy {
 				defer func() {
 					if err := module.Destroy(t); err != nil {
 						t.Logf("Warning: Cleanup for module %s failed: %v", module.Name, err)
@@ -174,18 +184,18 @@ func RunTests(t *testing.T, modules []*Module, parallel bool) {
 
 func TestApplyNoError(t *testing.T) {
 	flag.Parse()
-	parseExceptionList()
+	config.parseExceptionList()
 
-	if example == "" {
+	if config.example == "" {
 		t.Fatal("-example flag is not set")
 	}
 
-	if exceptionList[example] {
-		t.Skipf("Skipping example %s as it is in the exception list", example)
+	if config.exceptionList[config.example] {
+		t.Skipf("Skipping example %s as it is in the exception list", config.example)
 	}
 
-	modulePath := filepath.Join("..", "examples", example)
-	module := NewModule(example, modulePath)
+	modulePath := filepath.Join(examplesDir, config.example)
+	module := NewModule(config.example, modulePath)
 	var errorMessages []string
 
 	if err := module.Apply(t); err != nil {
@@ -193,7 +203,7 @@ func TestApplyNoError(t *testing.T) {
 		t.Fail()
 	}
 
-	if !skipDestroy {
+	if !config.skipDestroy {
 		if err := module.Destroy(t); err != nil {
 			errorMessages = append(errorMessages, fmt.Sprintf("Cleanup failed for module %s: %v", module.Name, err))
 		}
@@ -209,9 +219,9 @@ func TestApplyNoError(t *testing.T) {
 
 func TestApplyAllSequential(t *testing.T) {
 	flag.Parse()
-	parseExceptionList()
+	config.parseExceptionList()
 
-	manager := NewModuleManager(filepath.Join("..", "examples"))
+	manager := NewModuleManager(examplesDir)
 	modules, err := manager.DiscoverModules()
 	if err != nil {
 		t.Fatalf("Failed to discover modules: %v", err)
@@ -222,9 +232,9 @@ func TestApplyAllSequential(t *testing.T) {
 
 func TestApplyAllParallel(t *testing.T) {
 	flag.Parse()
-	parseExceptionList()
+	config.parseExceptionList()
 
-	manager := NewModuleManager(filepath.Join("..", "examples"))
+	manager := NewModuleManager(examplesDir)
 	modules, err := manager.DiscoverModules()
 	if err != nil {
 		t.Fatalf("Failed to discover modules: %v", err)
