@@ -18,7 +18,8 @@ module "groups" {
 }
 
 module "network" {
-  source = "../../"
+  source  = "app.terraform.io/aztfmods/vnet/azure"
+  version = "~> 1.0"
 
   naming = local.naming
 
