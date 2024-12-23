@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.0](https://github.com/aztfmods/terraform-azure-vnet/compare/v1.2.0...v1.3.0) (2024-12-19)
+
+
+### Features
+
+* **tests:** encapsulated config and use constants and updates module sources to use registry in usages ([#20](https://github.com/aztfmods/terraform-azure-vnet/issues/20)) ([dc3e632](https://github.com/aztfmods/terraform-azure-vnet/commit/dc3e6327db9a3523cbdbdc7c4050ae058c8f9418))
+* **validation:** add more validation that ensures subnet address prefixes are within the vnet address space and nsg rules have unique priorities ([#18](https://github.com/aztfmods/terraform-azure-vnet/issues/18)) ([745e27c](https://github.com/aztfmods/terraform-azure-vnet/commit/745e27c32f9f86a3953aabea185938a07d542ec9))
+
 ## [1.2.0](https://github.com/aztfmods/terraform-azure-vnet/compare/v1.1.0...v1.2.0) (2024-12-18)
 
 
