@@ -1,4 +1,4 @@
-.PHONY: all install-tools validate fmt docs test test-parallel test-sequential
+.PHONY: all install-tools validate fmt docs test test-parallel test-sequential destroy
 
 all: install-tools validate fmt docs
 
@@ -11,6 +11,9 @@ TEST_ARGS := $(if $(skip-destroy),-skip-destroy=$(skip-destroy)) \
 
 test:
 	cd tests && go test -v -timeout 60m -run '^TestApplyNoError$$' -args $(TEST_ARGS) .
+
+destroy:
+	cd tests && go test -v -timeout 60m -run '^TestDestroyNoError$$' -args $(TEST_ARGS) .
 
 test-sequential:
 	cd tests && go test -v -timeout 120m -run '^TestApplyAllSequential$$' -args $(TEST_ARGS) .
