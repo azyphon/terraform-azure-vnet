@@ -217,6 +217,31 @@ func TestApplyNoError(t *testing.T) {
 	}
 }
 
+func TestDestroyNoError(t *testing.T) {
+	flag.Parse()
+	config.parseExceptionList()
+
+	if config.example == "" {
+		t.Fatal("-example flag is not set")
+	}
+
+	modulePath := filepath.Join(examplesDir, config.example)
+	module := NewModule(config.example, modulePath)
+	var errorMessages []string
+
+	if err := module.Destroy(t); err != nil {
+		errorMessages = append(errorMessages, fmt.Sprintf("Destroy failed for module %s: %v", module.Name, err))
+		t.Fail()
+	}
+
+	if len(errorMessages) > 0 {
+		fmt.Println("Summary of errors:")
+		for _, msg := range errorMessages {
+			fmt.Println(msg)
+		}
+	}
+}
+
 func TestApplyAllSequential(t *testing.T) {
 	flag.Parse()
 	config.parseExceptionList()
