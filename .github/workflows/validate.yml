@@ -9,6 +9,6 @@ on:
 
 jobs:
   checks:
-    uses: aztfmods/validor/.github/workflows/validate.yml@main
+    uses: azyphon/validor/.github/workflows/validate.yml@main
     secrets:
       PAT: ${{ secrets.PAT }}

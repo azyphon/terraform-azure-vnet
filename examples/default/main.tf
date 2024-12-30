@@ -1,12 +1,12 @@
 module "naming" {
-  source  = "app.terraform.io/aztfmods/naming/azure"
+  source  = "app.terraform.io/azyphon/naming/azure"
   version = "~> 1.0"
 
   suffix = ["demo", "dev"]
 }
 
 module "groups" {
-  source  = "app.terraform.io/aztfmods/rg/azure"
+  source  = "app.terraform.io/azyphon/rg/azure"
   version = "~> 2.0"
 
   config = {
@@ -18,7 +18,7 @@ module "groups" {
 }
 
 module "network" {
-  source  = "app.terraform.io/aztfmods/vnet/azure"
+  source  = "app.terraform.io/azyphon/vnet/azure"
   version = "~> 1.0"
 
   naming = local.naming
