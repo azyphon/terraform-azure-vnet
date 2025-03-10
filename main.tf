@@ -32,6 +32,7 @@ resource "azurerm_virtual_network" "this" {
 
 
 
+
 # subnets
 resource "azurerm_subnet" "this" {
   for_each = lookup(
