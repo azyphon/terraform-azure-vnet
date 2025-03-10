@@ -12,3 +12,4 @@ jobs:
     uses: azyphon/validor/.github/workflows/validate.yml@main
     # secrets:
     #   PAT: ${{ secrets.PAT }}
+    #
