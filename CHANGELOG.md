@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.4.0](https://github.com/azyphon/terraform-azure-vnet/compare/v1.3.0...v1.4.0) (2025-03-10)
+
+
+### Features
+
+* adjusted files to reflect org change ([#24](https://github.com/azyphon/terraform-azure-vnet/issues/24)) ([0caf463](https://github.com/azyphon/terraform-azure-vnet/commit/0caf4631a079376d121422f4d738bac59ac0c605))
+* **deps:** bump github.com/gruntwork-io/terratest in /tests ([#21](https://github.com/azyphon/terraform-azure-vnet/issues/21)) ([c280f8c](https://github.com/azyphon/terraform-azure-vnet/commit/c280f8c6b248afcd660f587d770bde51855a3c39))
+* **testing:** add extended destroy functionality in makefile and tests ([#22](https://github.com/azyphon/terraform-azure-vnet/issues/22)) ([8e9d5a5](https://github.com/azyphon/terraform-azure-vnet/commit/8e9d5a512f639439272a6dd0e67ab6842b192a41))
+* trigger workflow2 ([#27](https://github.com/azyphon/terraform-azure-vnet/issues/27)) ([dc423c8](https://github.com/azyphon/terraform-azure-vnet/commit/dc423c80ecb8c0165fb7fc00ef7fe853f25804a7))
+
 ## [1.3.0](https://github.com/aztfmods/terraform-azure-vnet/compare/v1.2.0...v1.3.0) (2024-12-19)
 
 
