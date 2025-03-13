@@ -30,7 +30,12 @@ resource "azurerm_virtual_network" "this" {
   }
 }
 
+resource "azurerm_virtual_network_dns_servers" "this" {
+  for_each = length(lookup(var.config, "dns_servers", [])) > 0 ? { "default" = var.config.dns_servers } : {}
 
+  virtual_network_id = azurerm_virtual_network.this.id
+  dns_servers        = each.value
+}
 
 # subnets
 resource "azurerm_subnet" "this" {
