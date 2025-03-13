@@ -31,44 +31,6 @@ resource "azurerm_virtual_network" "this" {
 }
 
 
-
-# subnets
-resource "azurerm_subnet" "this" {
-  for_each = lookup(
-    var.config, "subnets", {}
-  )
-
-  name = coalesce(
-    lookup(each.value, "name", null),
-    join("-", [var.naming.subnet, each.key])
-  )
-
-  resource_group_name = try(
-    var.config.resource_group_name, var.resource_group_name
-  )
-
-  virtual_network_name                          = azurerm_virtual_network.this.name
-  address_prefixes                              = each.value.address_prefixes
-  service_endpoints                             = each.value.service_endpoints
-  private_link_service_network_policies_enabled = each.value.private_link_service_network_policies_enabled
-  private_endpoint_network_policies             = each.value.private_endpoint_network_policies
-  service_endpoint_policy_ids                   = each.value.service_endpoint_policy_ids
-  default_outbound_access_enabled               = each.value.default_outbound_access_enabled
-
-  dynamic "delegation" {
-    for_each = each.value.delegations != null ? each.value.delegations : {}
-
-    content {
-      name = delegation.key
-
-      service_delegation {
-        name    = delegation.value.name
-        actions = delegation.value.actions
-      }
-    }
-  }
-}
-
 # network security groups individual and shared
 resource "azurerm_network_security_group" "this" {
   for_each = merge(
