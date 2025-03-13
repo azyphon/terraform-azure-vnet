@@ -35,6 +35,107 @@ The following resources are used by this module:
 
 The following input variables are required:
 
+### <a name="input_config"></a> [config](#input\_config)
+
+Description: Contains virtual network configuration
+
+Type:
+
+```hcl
+object({
+    name                    = string
+    resource_group_name     = optional(string)
+    location                = optional(string)
+    address_space           = list(string)
+    tags                    = optional(map(string))
+    edge_zone               = optional(string)
+    bgp_community           = optional(string)
+    flow_timeout_in_minutes = optional(number)
+    dns_servers             = optional(list(string), [])
+    encryption = optional(object({
+      enforcement = optional(string, "AllowUnencrypted")
+    }))
+    subnets = optional(map(object({
+      name                                          = optional(string)
+      address_prefixes                              = list(string)
+      service_endpoints                             = optional(list(string), [])
+      private_link_service_network_policies_enabled = optional(bool, false)
+      private_endpoint_network_policies             = optional(string, "Disabled")
+      default_outbound_access_enabled               = optional(bool)
+      service_endpoint_policy_ids                   = optional(list(string))
+      delegations = optional(map(object({
+        name    = string
+        actions = optional(list(string), [])
+      })))
+      network_security_group = optional(object({
+        name = optional(string)
+        tags = optional(map(string))
+        rules = optional(map(object({
+          name                         = optional(string)
+          priority                     = number
+          direction                    = string
+          access                       = string
+          protocol                     = string
+          description                  = optional(string, null)
+          source_port_range            = optional(string, null)
+          source_port_ranges           = optional(list(string), null)
+          destination_port_range       = optional(string, null)
+          destination_port_ranges      = optional(list(string), null)
+          source_address_prefix        = optional(string, null)
+          source_address_prefixes      = optional(list(string), null)
+          destination_address_prefix   = optional(string, null)
+          destination_address_prefixes = optional(list(string), null)
+        })))
+      }))
+      route_table = optional(object({
+        name                          = optional(string)
+        bgp_route_propagation_enabled = optional(bool, true)
+        tags                          = optional(map(string))
+        routes = optional(map(object({
+          name                   = optional(string)
+          address_prefix         = string
+          next_hop_type          = string
+          next_hop_in_ip_address = optional(string, null)
+        })))
+      }))
+      shared = optional(object({
+        route_table            = optional(string)
+        network_security_group = optional(string)
+      }), {})
+    })), {})
+    network_security_groups = optional(map(object({
+      name = optional(string)
+      tags = optional(map(string))
+      rules = optional(map(object({
+        name                         = optional(string)
+        priority                     = number
+        direction                    = string
+        access                       = string
+        protocol                     = string
+        description                  = optional(string, null)
+        source_port_range            = optional(string, null)
+        source_port_ranges           = optional(list(string), null)
+        destination_port_range       = optional(string, null)
+        destination_port_ranges      = optional(list(string), null)
+        source_address_prefix        = optional(string, null)
+        source_address_prefixes      = optional(list(string), null)
+        destination_address_prefix   = optional(string, null)
+        destination_address_prefixes = optional(list(string), null)
+      })))
+    })), {})
+    route_tables = optional(map(object({
+      name                          = optional(string)
+      bgp_route_propagation_enabled = optional(bool, true)
+      tags                          = optional(map(string))
+      routes = optional(map(object({
+        name                   = optional(string)
+        address_prefix         = string
+        next_hop_type          = string
+        next_hop_in_ip_address = optional(string, null)
+      })))
+    })), {})
+  })
+```
 
 ## Optional Inputs
 
