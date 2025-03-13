@@ -177,13 +177,18 @@ Default: `{}`
 
 The following outputs are exported:
 
+### <a name="output_config"></a> [config](#output\_config)
+
+Description: contains virtual network configuration
+
 ### <a name="output_subnets"></a> [subnets](#output\_subnets)
 
 Description: contains subnets configuration
 <!-- END_TF_DOCS -->
 
+## Goals
 
-
+For more information, please see our [goals and non-goals](./GOALS.md).
 
 ## Testing
 
